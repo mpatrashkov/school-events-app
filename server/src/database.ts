@@ -1,8 +1,8 @@
 import mongoose from "mongoose"
-import { dbHost, dbName } from "./config"
+import { dbHost, dbName, dbPass, dbUser } from "./config"
 
 export const connect = async (): Promise<undefined> => {
-    mongoose.connect(`mongodb://${dbHost}/${dbName}`, {
+    mongoose.connect(`mongodb+srv://${dbUser}:${dbPass}@${dbHost}/${dbName}`, {
         useNewUrlParser: true
     })
 
