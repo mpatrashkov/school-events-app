@@ -25,7 +25,7 @@ app.post("/event", async (req, res) => {
 })
 
 app.use("*", (req, res) => {
-    res.status(404).send("Ni moga ti namerq stranicata")
+    res.status(404).send("Ni moga ti namerq stranicata brat, sori...")
 })
 
 async function main() {
