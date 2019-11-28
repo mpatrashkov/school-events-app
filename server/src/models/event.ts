@@ -1,23 +1,55 @@
-import mongoose, { Schema, Document, Model } from 'mongoose';
+import mongoose, { Schema, Document, Model, Types } from 'mongoose';
+import {IEventLocation} from "./eventLocation"
+import {IUser} from "./user"
 
-export interface IEventModel extends Document {
-  date: Date,
-  time: {
-      start: Date,
-      end: Date
-  },
-  title: string,
-  description: string
+enum EventType {
+    Regular = "reg", Dynamic = "dyn"
 }
 
-const EventModelSchema: Schema = new Schema({
-  date: { type: Date, required: true },
-  time: {
-      start: { type: Date, required: true },
-      end: { type: Date, required: true }
-  },
-  title: { type: String, required: true },
-  description: { type: String, required: true }
-});
+enum EventRepeatPeriod {
+    None = 0, Daily = 1, Weekly = 2, Monthly = 3
+}
 
-export const EventModel: Model<IEventModel> = mongoose.model<IEventModel>('EventModel', EventModelSchema);
+export interface IEvent extends Document {
+    title: string,
+    description: string,
+    time: {
+        start: Date,
+        end: Date
+    },
+    date: Date,
+
+    thumbnail: string,
+    images: string[],
+    attachedDocuments: {
+        name: string,
+        path: string
+    }[],
+
+    eventType: EventType,
+    eventRepetitions: number,
+    repeatPeriod: EventRepeatPeriod,
+    peopleLimit: number,
+    location: IEventLocation["_id"],
+    lector: IUser["_id"],
+    owner: IUser["_id"]
+}
+
+const EventSchema: Schema = new Schema({
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    time: { type: [Map], of: Date, required: true},
+    date: { type: Date, required: true},
+    thumbnail: String,
+    images: [String],
+    attachedDocuments: { type: [Map], of: String},
+    eventType: { type: EventType, required: true},
+    eventRepetitions: { type: Number, required: true },
+    repeatPeriod: { type: EventRepeatPeriod, required: true},
+    peopleLimit: { type: Number, required: true },
+    location: Types.ObjectId,
+    lector: Types.ObjectId,
+    owner: Types.ObjectId
+})
+
+export const EventModel: Model<IEvent> = mongoose.model<IEvent>('EventModel', EventSchema)
